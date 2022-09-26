@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"d7/utils"
-	//"github.com/mikkeloscar/gopkgbuild"
-	"github.com/spf13/cobra"
+	"fmt"
 	"os"
-	//"strings"
+	"strings"
+
+	"github.com/mikkeloscar/gopkgbuild"
+	"github.com/spf13/cobra"
 )
 
 var addCmd = &cobra.Command{
@@ -38,34 +40,53 @@ d7 add <package_name>
 
 			}
 		} else {
-			utils.PrntRed("Folder already exists, updating PKGBUILD")
+			utils.PrntRed("Folder already exists, running git pull")
 			utils.RunCmd([]string{"git", "pull"}, dirName, true, false)
 		}
 
-		//utils.PrntBlue("Resolving dependencies..")
+		pkgb, err := pkgbuild.ParseSRCINFO(dirName + "/.SRCINFO")
+		if err != nil {
+			utils.PrntRed("Error parsing .SRCINFO")
+			os.Exit(1)
+		}
 
-		//pkgb, err := pkgbuild.ParseSRCINFO(dirName + "/.SRCINFO")
-		//if err != nil {
-		//utils.PrntRed("Error parsing .SRCINFO")
-		//os.Exit(1)
-		//}
+		var makeDeps []string
+		for _, buildDep := range pkgb.Makedepends {
+			makeDeps = append(makeDeps, buildDep.Name)
+		}
 
-		//var makeDeps []string
-		//for _, buildDep := range pkgb.Makedepends {
-		//makeDeps = append(makeDeps, buildDep.Name)
-		//}
+		if len(makeDeps) != 0 {
+			utils.PrntBlue("Build dependencies: " + strings.Join(makeDeps, ", "))
 
-		//utils.PrntBlue("Build dependencies: " + strings.Join(makeDeps, ", "))
+			pacmanArgs := []string{"sudo", "pacman", "-S"}
 
-		//pacmanArgs := []string{"sudo", "pacman", "-S", strings.Join(makeDeps, " ")}
-		//utils.RunCmd(pacmanArgs, dirName, true, false)
+			pacmanArgs = append(pacmanArgs, makeDeps...)
+			utils.RunCmd(pacmanArgs, dirName, true, false)
+		}
 
 		utils.PrntGreen("Building " + args[0])
 		utils.RunCmd([]string{"makepkg", "-sci"}, dirName, true, false)
 
-		//utils.PrntBlue("Cleaning up..")
-		//pacmanRnsArgs := []string{"sudo", "pacman", "-Rns", strings.Join(makeDeps, " ")}
-		//utils.RunCmd(pacmanRnsArgs, dirName, true, false)
+		if len(makeDeps) != 0 {
+			utils.PrntBlue("Remove build dependencies? [Y/n]")
+
+			var response string
+
+			_, err := fmt.Scanln(&response)
+
+			if err != nil {
+				os.Exit(1)
+			}
+
+			if response == "Y" || response == "y" {
+				pacmanRnsArgs := []string{"sudo", "pacman", "-Rns"}
+				pacmanRnsArgs = append(pacmanRnsArgs, makeDeps...)
+				utils.RunCmd(pacmanRnsArgs, dirName, true, false)
+			} else {
+				os.Exit(1)
+			}
+
+		}
 	},
 }
 
