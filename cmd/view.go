@@ -15,10 +15,10 @@ var viewCmd = &cobra.Command{
 d7 view <PKGNAME>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			utils.PrntRed("Provide a package!")
+			utils.PrntRed("Provide a package!", true)
 			os.Exit(1)
 		} else if len(args) > 1 {
-			utils.PrntRed("Too many arguments!")
+			utils.PrntRed("Too many arguments!", true)
 			os.Exit(1)
 		}
 
@@ -34,13 +34,13 @@ d7 view <PKGNAME>`,
 				utils.RunCmd(gitArgs, dirName, false, true)
 			}
 		} else {
-			utils.PrntRed("Folder already exists, updating PKGBUILD")
+			utils.PrntRed("Folder already exists, updating PKGBUILD", true)
 			utils.RunCmd([]string{"git", "pull"}, dirName, true, false)
 		}
 
 		content, err := ioutil.ReadFile(dirName + "/" + "PKGBUILD")
 		if err != nil {
-			utils.PrntRed("Error while reading file")
+			utils.PrntRed("Error while reading file", true)
 			utils.RunCmd([]string{"rm", "-rf", args[0]}, "/tmp/d7/cloned", true, false)
 			os.Exit(1)
 		}

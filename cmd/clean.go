@@ -15,7 +15,7 @@ d7 clean`,
 
 		items, _ := ioutil.ReadDir("/tmp/d7/cloned")
 		for _, item := range items {
-			utils.PrntRed("Removing " + item.Name())
+			utils.PrntRed("Removing "+item.Name(), true)
 			utils.RunCmd([]string{"rm", "-rf", item.Name()}, "/tmp/d7/cloned", true, false)
 		}
 	},

@@ -12,16 +12,28 @@ const blue string = "\x1b[34m"
 const bold string = "\x1b[1m"
 const reset string = "\x1b[0m"
 
-func PrntRed(s string) {
-	fmt.Printf("%s%s>>%s %s%s%s\n", bold, red, reset, bold, s, reset)
+func PrntRed(s string, nl bool) {
+	if nl {
+		fmt.Printf("%s%s>>%s %s%s%s\n", bold, red, reset, bold, s, reset)
+	} else {
+		fmt.Printf("%s%s>>%s %s%s%s", bold, red, reset, bold, s, reset)
+	}
 }
 
-func PrntGreen(s string) {
-	fmt.Printf("%s%s>>%s %s%s%s\n", bold, green, reset, bold, s, reset)
+func PrntGreen(s string, nl bool) {
+	if nl {
+		fmt.Printf("%s%s>>%s %s%s%s\n", bold, green, reset, bold, s, reset)
+	} else {
+		fmt.Printf("%s%s>>%s %s%s%s", bold, green, reset, bold, s, reset)
+	}
 }
 
-func PrntBlue(s string) {
-	fmt.Printf("%s%s>>%s %s%s%s\n", bold, blue, reset, bold, s, reset)
+func PrntBlue(s string, nl bool) {
+	if nl {
+		fmt.Printf("%s%s>>%s %s%s%s\n", bold, green, reset, bold, s, reset)
+	} else {
+		fmt.Printf("%s%s>>%s %s%s%s", bold, green, reset, bold, s, reset)
+	}
 }
 
 func RunCmd(cmd []string, dir string, setDir bool, hidden bool) {
