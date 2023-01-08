@@ -7,6 +7,7 @@ Lightweight AUR helper written in Golang.
 - Add packages.
 - Update existing packages.
 - Clean your cloned packages directory.
+- View a package's PKGBUILD.
 
 ### Why?
 
@@ -37,4 +38,10 @@ d7 sync
 
 ```
 d7 clean
+```
+
+#### View PKGBUILD
+
+```
+d7 view <pkg_name>
 ```
