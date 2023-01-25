@@ -69,7 +69,7 @@ d7 add <package_name>
 			}
 
 			if response == "Y" || response == "y" {
-				pacmanArgs := []string{"sudo", "pacman", "-S"}
+				pacmanArgs := []string{"sudo", "pacman", "-S", "--needed"}
 
 				pacmanArgs = append(pacmanArgs, makeDeps...)
 				utils.RunCmd(pacmanArgs, dirName, true, false)
